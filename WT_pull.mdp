@@ -1,0 +1,55 @@
+title       = Umbrella pulling simulation
+define      = -DPOSRES_B
+; Run parameters
+integrator  = md        ; leap-frog integrator
+dt          = 0.002
+tinit       = 0
+nsteps      = 500000    ; 1000 ps
+nstcomm     = 10
+; Output parameters
+nstxout     = 5000      ; every 10 ps
+nstvout     = 5000 
+nstfout     = 500
+nstxtcout   = 500       ; every 1 ps
+nstenergy   = 500
+energygrsp = protein UNK
+; Bond parameters
+continuation            = yes       ; Restarting after NPT
+constraint_algorithm    = lincs     ; holonomic constraints
+constraints             = all-bonds   ; all bonds (even heavy atom-H bonds) constrained
+; Single-range cutoff scheme
+cutoff-scheme   = Verlet
+ns_type         = grid      ; search neighboring grid cells
+nstlist         = 20        ; 
+rlist           = 1.4
+rcoulomb        = 1.4       ; short-range electrostatic cutoff (in nm)
+rvdw            = 1.4       ; short-range van der Waals cutoff (in nm)
+; Electrostatics
+coulombtype     = PME
+fourierspacing  = 0.12
+fourier_nx      = 0
+fourier_ny      = 0
+fourier_nz      = 0
+pme_order       = 4
+ewald_rtol      = 1e-5
+optimize_fft    = yes
+; Periodic boundary conditions
+pbc     = xyz       ; 3-D PBC
+; Dispersion correction
+DispCorr    = EnerPres  ; account for cut-off vdW scheme
+; Velocity generation
+gen_vel     = no        ; Velocity generation is off
+; Pull code
+pull                    = yes
+pull_ncoords            = 1         ; only one reaction coordinate 
+pull_ngroups            = 2         ; two groups defining one reaction coordinate 
+pull_group1_name        = UNK 
+pull_group2_name        = r_42 
+pull_coord1_type        = umbrella  ; harmonic potential
+pull_coord1_geometry    = direction-periodic  ; simple distance increase 
+pull_coord1_dim         = N Y N
+pull-coord1-vec         = 0 1 0 
+pull_coord1_groups      = 1 2
+pull_coord1_start       = yes       ; define initial COM distance > 0
+pull_coord1_rate        = 0.004      ; 0.004 nm per ps = 4 nm per ns
+pull_coord1_k           = 1000      ; kJ mol^-1 nm^-2
